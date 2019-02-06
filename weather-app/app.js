@@ -1,5 +1,6 @@
-const request = require("request");
 const yargs = require("yargs");
+const geocode = require("./geocode/geocode");
+const forecast = require("./forecast/forecast");
 
 const argv = yargs
   .options({
@@ -13,26 +14,17 @@ const argv = yargs
   .help()
   .alias("help", "h").argv;
 
-const locationToFetch = encodeURI(argv.a);
-
-const key = "dSMXOlUrVsXgaNtYx9GPgVBEusoG5jT4";
-const url = `http://www.mapquestapi.com/geocoding/v1/address?key=${key}&location=${locationToFetch}`;
-
-request(
-  {
-    url: url,
-    json: true
-  },
-  (error, response, body) => {
-    console.log("URL", url);
-    
-    if (!error) {
-      const { lat, lng } = body.results[0].locations[0].latLng;
-      console.log("Lattitude:", lat);
-      console.log("Longitude:", lng);
-      return;
-    }
-
-    console.log("Something went wrong!");
+const locationToGeocode = encodeURI(argv.a);
+console.log("Location to geocode", locationToGeocode);
+geocode.geocodeAddress(locationToGeocode, (errorMessage, response) => {  
+  if (!errorMessage) {
+    forecast.getForecast(response.latitude, response.longitude, (errorMessage, forecast) => {
+      if (!errorMessage) {
+        const {summary, temperature, apparentTemperature} = forecast;        
+        console.log("Summary:\t", summary, "\nTemperature:\t", temperature, "°F");
+        console.log("RealSense:\t", apparentTemperature, "°F");
+      }
+    });
   }
-);
+
+});
