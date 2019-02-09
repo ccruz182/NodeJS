@@ -1,0 +1,18 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "Tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha **/utils_test.js",
+    "test-watch": "nodemon --exec \"npm test\""
+  },
+  "author": "CCA",
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^5.2.0"
+  },
+  "devDependencies": {
+    "expect": "^1.20.2"
+  }
+}
