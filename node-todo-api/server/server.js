@@ -38,14 +38,50 @@ app.get("/todos/:id", (req, res) => {
   const { id } = req.params;
 
   if (!ObjectID.isValid(id)) {
-    return res.status(401).send({error: "Bad request"});
+    return res.status(401).send({ error: "Bad request" });
   } else {
-    Todo.findOne({_id: id}).then(todo => {
-      if (todo)
-        return res.status(200).send(todo);
-        else
-        return res.status(404).send({error: "Item not found"});
+    Todo.findOne({ _id: id }).then(todo => {
+      if (todo) return res.status(200).send(todo);
+      else return res.status(404).send({ error: "Item not found" });
     });
+  }
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const { id } = req.params;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(401).send({ error: "Bad request" });
+  } else {
+    Todo.findOneAndDelete({ _id: id }).then(todo => {
+      if (todo) return res.status(200).send({ message: "Item deleted" });
+      else return res.status(404).send({ error: "Item not found" });
+    });
+  }
+});
+
+app.patch("/todos/:id", (req, res) => {
+  const { id } = req.params;
+  const { completed, completedAt } = req.body;
+
+  if (ObjectID.isValid(id)) {
+    if (completed && completedAt) {      
+      Todo.findOneAndUpdate(
+        { _id: id },
+        { $set: { completed: completed, completedAt: completedAt } }
+      )
+        .then(doc => {
+          if (doc) return res.send({ message: "Item updated" });
+          else return res.status(404).send({error: "Item not found"});
+        })
+        .catch(error => {
+          return res.status(401).send({ error });
+        });
+    } else {
+      return res.status(401).send({ error: "Bad request" });
+    }
+  } else {
+    return res.status(401).send({ error: "Bad request" });
   }
 });
 
