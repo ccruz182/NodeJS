@@ -5,6 +5,7 @@ const { ObjectID } = require("mongodb");
 const { mongoose } = require("./db/mongoose");
 const { Todo } = require("./db/models/todo");
 const { User } = require("./db/models/user");
+const {authenticate} = require("./middleware/authenticate");
 
 const app = express();
 
@@ -85,11 +86,9 @@ app.patch("/todos/:id", (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
-
+// ------------------------------------------------------------------------------
 /* User actions */
+
 app.post("/users", (req, res) => {
   const { email, password } = req.body;
 
@@ -107,6 +106,17 @@ app.post("/users", (req, res) => {
       res.status(400).send({ error });
     });
 });
+
+app.get("/users/me", authenticate, (req, res) => {
+  res.send(req.user);
+});
+
+// ------------------------------------------------------------------------------
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
+
+
 module.exports = {
   app
 };
