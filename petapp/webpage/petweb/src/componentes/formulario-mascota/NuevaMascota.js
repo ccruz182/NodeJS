@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { Button, Card, Form } from "semantic-ui-react";
 import axios from "axios";
+import validator from "validator";
 
-import EspecieSelector from "./formulario-mascota/EspecieSelector";
-import ModalOk from "./formulario-mascota/ModalOk";
+import EspecieSelector from "./EspecieSelector";
+import ModalError from "./ModalError";
+import ModalOk from "./ModalOk";
 
-import { baseURL } from "../datos-servidor/datos";
+import { baseURL } from "../../datos-servidor/datos";
+import MensajeDatosIncompletos from "./MensajeDatosIncompletos";
 
 class NuevaMascota extends Component {
   state = {
@@ -16,7 +19,10 @@ class NuevaMascota extends Component {
     fechaNacimiento: "",
     correo: "",
     telefono: "",
-    mostrarModal: false
+    mostrarModal: false,
+    mostrarError: false,
+    datosIncompletos: false,
+    errorMsg: ""
   };
 
   handleChange = (e, { name, value }) => {
@@ -38,6 +44,10 @@ class NuevaMascota extends Component {
     this.props.history.push("/");
   };
 
+  cerrarError = () => {
+    this.setState({ mostrarError: false });
+  };
+
   agregarMascota = () => {
     const {
       nombre,
@@ -48,6 +58,30 @@ class NuevaMascota extends Component {
       correo,
       telefono
     } = this.state;
+
+    /* Validación de campos */
+    let errorMsg = "";
+    if (!validator.isEmail(correo)) {
+      errorMsg = "El correo electrónico ingresado no es válido";
+    }
+
+    if (
+      validator.isEmpty(nombre) &
+      validator.isEmpty(genero) &
+      validator.isEmpty(especie)
+    ) {
+      errorMsg = "Hay campos vacíos. Favor de llenarlos";
+    }
+
+    if (!validator.isNumeric(telefono)) {
+      errorMsg = "El número telefónico ingresado no es válido";
+    }
+
+    if (!validator.isEmpty(errorMsg)) {
+      console.log("e", errorMsg);
+      this.setState({ datosIncompletos: true, errorMsg });
+      return;
+    }
 
     axios
       .post(`${baseURL}/mascotas`, {
@@ -63,7 +97,8 @@ class NuevaMascota extends Component {
         this.setState({ mostrarModal: true });
       })
       .catch(error => {
-        console.log("ERROR", error);
+        alert(error);
+        this.setState({ mostrarError: true });
       });
   };
 
@@ -74,15 +109,29 @@ class NuevaMascota extends Component {
       raza,
       fechaNacimiento,
       correo,
-      telefono
+      telefono,
+      mostrarModal,
+      mostrarError
     } = this.state;
 
-    const { mostrarModal } = this.state;
+    let mensajeDatosIncompletos = (
+      <MensajeDatosIncompletos mensaje={this.state.errorMsg} />
+    );
+
+    if (!this.state.datosIncompletos) {
+      mensajeDatosIncompletos = null;
+    }
 
     return (
       <div>
         <ModalOk estado={mostrarModal} cerrar={this.cerrarModal} />
+        <ModalError estado={mostrarError} cerrar={this.cerrarError} />
         <Card fluid>
+          <Card.Content>
+            <Card.Header>
+              <center>Ingresa los datos solicitados</center>
+            </Card.Header>
+          </Card.Content>
           <div style={{ padding: "3%" }}>
             <Form onSubmit={this.agregarMascota}>
               <Form.Input
@@ -114,7 +163,10 @@ class NuevaMascota extends Component {
 
               <Form.Group inline>
                 <label>Especie</label>
-                <EspecieSelector handleChange={this.handleChange} valorSel={this.state.especie}/>
+                <EspecieSelector
+                  handleChange={this.handleChange}
+                  valorSel={this.state.especie}
+                />
               </Form.Group>
 
               <Form.Input
@@ -143,6 +195,7 @@ class NuevaMascota extends Component {
                 placeholder="Correo electrónico"
                 onChange={this.handleChange}
                 value={correo}
+                type="email"
               />
               <Form.Input
                 name="telefono"
@@ -153,8 +206,9 @@ class NuevaMascota extends Component {
                 value={telefono}
               />
 
+              {mensajeDatosIncompletos}
               <Button fluid color="green">
-                Añadir
+                Añadir Mascota
               </Button>
             </Form>
           </div>

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
+import Mascotas from "./mascotas/Mascotas";
 import Navegacion from "./Navegacion";
-import NuevaMascota from "./NuevaMascota";
+import NuevaMascota from "./formulario-mascota/NuevaMascota";
 
 class Router extends Component {
   render() {
@@ -13,11 +14,9 @@ class Router extends Component {
 
           <div className="contenido">
             <Switch>
-              <Route
-                exact
-                path="/nueva_mascota"
-                component={NuevaMascota}
-              />
+              <Route exact path="/mascotas" component={Mascotas} />
+
+              <Route exact path="/nueva_mascota" component={NuevaMascota} />
 
               {/*
               <Route exact path="/nosotros" component={Nosotros} />

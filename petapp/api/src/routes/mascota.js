@@ -7,10 +7,10 @@ const router = new express.Router();
 // Adición de un nuevo peril de una mascota
 router.post("/mascotas", (req, res) => {
   const mascota = new Mascota(req.body);
-
+  console.log("**M**", req.body);
   mascota
     .save()
-    .then(doc => {
+    .then(doc => {      
       res.send(doc);
     })
     .catch(error => {
@@ -25,6 +25,9 @@ router.post("/mascotas", (req, res) => {
 router.get("/mascotas", (req, res) => {
   Mascota.find({})
     .then(mascotas => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
+      res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
       res.send(mascotas);
     })
     .catch(error => {
