@@ -35,6 +35,15 @@ router.get("/mascotas", (req, res) => {
     });
 });
 
+router.get("/mascotas/:id", (req, res) => {
+  const {id} = req.params;
+  Mascota.findById(id).then(mascota => {
+    res.send(mascota);
+  }).catch(error => {
+    res.status(404).send(error);
+  })
+});
+
 // Se obtienen las n mascotas, asociadas a un correo
 router.get("/mascota", (req, res) => {
   const { correo } = req.query;

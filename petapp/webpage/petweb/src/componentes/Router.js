@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
+import Buscador from "./buscador/Buscador";
 import Mascotas from "./mascotas/Mascotas";
 import Navegacion from "./Navegacion";
 import NuevaMascota from "./formulario-mascota/NuevaMascota";
+import DetalleMascota from "./detalleMascota/DetalleMascota";
 
 class Router extends Component {
   render() {
@@ -17,6 +19,17 @@ class Router extends Component {
               <Route exact path="/mascotas" component={Mascotas} />
 
               <Route exact path="/nueva_mascota" component={NuevaMascota} />
+
+              <Route exact path="/buscador_mascotas" component={Buscador} />
+
+              <Route
+                exact
+                path="/mascota/:idMascota"
+                render={props => {
+                  const mascotaId = props.location.pathname.split("/")[2];
+                  return (<DetalleMascota idMascota={mascotaId}/>);
+                }}
+              />
 
               {/*
               <Route exact path="/nosotros" component={Nosotros} />
