@@ -31,7 +31,19 @@ const Mascota = mongoose.model("Mascota", {
   telefono: {
     type: String,
     trim: true
-  }
+  },
+  vacunas: [
+    {
+      fechaAplicacion: {
+        type: String,        
+        trim: true
+      },
+      tipoVacuna: {
+        type: String,         
+        trim: true
+      }
+    }
+  ]
 });
 
 module.exports = Mascota;
