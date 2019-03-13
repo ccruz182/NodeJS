@@ -124,7 +124,7 @@ class NuevaMascota extends Component {
 
     return (
       <div>
-        <ModalOk estado={mostrarModal} cerrar={this.cerrarModal} />
+        <ModalOk titulo="Se agregó la mascota correctamente!" estado={mostrarModal} cerrar={this.cerrarModal} />
         <ModalError estado={mostrarError} cerrar={this.cerrarError} />
         <Card fluid>
           <Card.Content>
