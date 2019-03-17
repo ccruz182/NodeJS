@@ -4,8 +4,8 @@ import axios from "axios";
 import validator from "validator";
 
 import EspecieSelector from "./EspecieSelector";
-import ModalError from "./ModalError";
-import ModalOk from "./ModalOk";
+import ModalError from "../utils/ModalError";
+import ModalOk from "../utils/ModalOk";
 
 import { baseURL } from "../../datos-servidor/datos";
 import MensajeDatosIncompletos from "./MensajeDatosIncompletos";

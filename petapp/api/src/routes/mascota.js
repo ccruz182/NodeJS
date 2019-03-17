@@ -95,4 +95,15 @@ router.patch("/mascotas/vacunas/:id", (req, res) => {
       res.status(500).catch({ error: "No se pudo actualizar el perfil" });
     });
 });
+
+// Eliminacion de Vacuna
+router.patch("/mascotas/vacunas/:idM/:idV", (req, res) => {
+  const {idM, idV} = req.params;
+
+  Mascota.findByIdAndUpdate(idM, {$pull: {vacunas: {_id: idV}}}).then(mascota => {
+    res.send(mascota);
+  }).catch(error => {
+    res.status(500).catch({error: "No se pudo actualizar el perfil"})
+  });
+});
 module.exports = router;

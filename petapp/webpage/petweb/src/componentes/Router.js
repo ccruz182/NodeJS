@@ -39,34 +39,7 @@ class Router extends Component {
                   const mascotaId = props.location.pathname.split("/")[3];
                   return <Vacunas idMascota={mascotaId} />;
                 }}
-              />
-
-              {/*
-              <Route exact path="/nosotros" component={Nosotros} />
-
-              <Route exact path="/contacto" component={Contacto} />
-
-              <Route
-                exact
-                path="/productos"
-                render={() => <Productos prods={this.state.productos} />}
-              />
-
-              <Route
-                exact
-                path="/producto/:productoID"
-                render={props => {
-                  const prodId = props.location.pathname.split("/")[2];
-                  return (
-                    <DetalleProducto
-                      informacion={this.state.productos[prodId]}
-                    />
-                  );
-                }}
-              />
-
-              <Route component={Error} />
-              */}
+              />              
             </Switch>
           </div>
         </div>

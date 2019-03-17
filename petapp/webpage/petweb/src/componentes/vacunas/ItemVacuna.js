@@ -4,7 +4,7 @@ import { Button, List } from "semantic-ui-react";
 const ItemVacuna = props => (
   <List.Item>
     <List.Content floated="right">
-      <Button basic color="red">
+      <Button basic color="red" onClick={() => props.eliminarVacuna(props.vacuna._id)}>
         Eliminar
       </Button>
     </List.Content>

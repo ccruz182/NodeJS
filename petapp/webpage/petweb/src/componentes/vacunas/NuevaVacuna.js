@@ -9,10 +9,17 @@ class NuevaVacuna extends Component {
     error: false
   };
 
+  /**
+   * Handler para la entrada de texto, referente al tipo de vacuna.
+   */
   tipoVacunaOnChangeHandler = (event, data) => {
     this.setState({ tipoVacuna: data.value });
   };
 
+  /**
+   * Se agrega la vacuna. Hace llamado a función pasada mediante props.
+   * Si el campo está vacío, de manera interna, muestra el error.
+   */
   agregaVacuna = () => {
     const tipoVacuna = this.state.tipoVacuna;
 
