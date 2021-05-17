@@ -1,65 +1,73 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 
-
-const ServiceRegistry = require('./lib/ServiceRegistry');
+const ServiceRegistry = require("./lib/ServiceRegistry");
 
 const service = express();
 service.use(bodyParser.json());
-
 
 module.exports = (config) => {
   const log = config.log();
   const serviceRegistry = new ServiceRegistry(log);
 
   // Add a request logging middleware in development mode
-  if (service.get('env') === 'development') {
+  if (service.get("env") === "development") {
     service.use((req, res, next) => {
       log.debug(`${req.method}: ${req.url}`);
       return next();
     });
   }
 
-    service.get('/services/:serviceName/:serviceVersion', (req, res, next) => {
-      const { serviceName, serviceVersion } = req.params;
-      const svc = serviceRegistry.getRegisterService(serviceName, serviceVersion);
+  service.get("/services/:serviceName/:serviceVersion", (req, res, next) => {
+    const { serviceName, serviceVersion } = req.params;
+    const svc = serviceRegistry.getRegisterService(serviceName, serviceVersion);
 
-      if (!svc) {
-        return res.status(404).json({'response': {'message': `Service ${serviceName} v${serviceVersion} not found.`}})
-      }
+    if (!svc) {
+      return res
+        .status(404)
+        .json({
+          response: {
+            message: `Service ${serviceName} v${serviceVersion} not found.`,
+          },
+        });
+    }
 
-      return res.json({'response': svc});
-    })
+    return res.json({ response: svc });
+  });
 
-  service.get('/services', (req, res, next) => {
+  service.get("/services", (req, res, next) => {
     const registeredServices = serviceRegistry.getRegisteredServices();
 
-    return res.json({'response': {registeredServices}})
-  })
+    return res.json({ response: { registeredServices } });
+  });
 
-  service.post('/services', (req, res, next) => {
+  service.post("/services", (req, res, next) => {
     const body = req.body;
 
-    const serviceIP = req.connection.remoteAddress.includes('::') ? `[${req.connection.remoteAddress}]` : req.connection.remoteAddress;
+    const serviceIP = req.connection.remoteAddress.includes("::")
+      ? `[${req.connection.remoteAddress}]`
+      : req.connection.remoteAddress;
 
-    const serviceInformation = {...body, ip: serviceIP};
+    const serviceInformation = { ...body, ip: serviceIP };
 
     const serviceKey = serviceRegistry.register(serviceInformation);
 
-    return res.json({'response': {serviceKey}})
-  })
+    return res.json({ response: { serviceKey } });
+  });
 
-  service.delete('/services', (req, res, next) => {
+  service.delete("/services", (req, res, next) => {
     const body = req.body;
-    
-    const serviceIP = req.connection.remoteAddress.includes('::') ? `[${req.connection.remoteAddress}]` : req.connection.remoteAddress;
 
-    const serviceInformation = {...body, ip: serviceIP};
+    const serviceIP = req.connection.remoteAddress.includes("::")
+      ? `[${req.connection.remoteAddress}]`
+      : req.connection.remoteAddress;
+
+    const serviceInformation = { ...body, ip: serviceIP };
 
     const deletedServiceKey = serviceRegistry.unregister(serviceInformation);
 
-    return res.json({'response': {deletedServiceKey}})
-  })
+    return res.json({ response: { deletedServiceKey } });
+  });
 
   // eslint-disable-next-line no-unused-vars
   service.use((error, req, res, next) => {
