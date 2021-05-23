@@ -36,7 +36,7 @@ module.exports = (config) => {
 
   service.get("/speakers/names", async (req, res, next) => {
     try {
-      return res.json(await speakersService.getNames());
+      //return res.json(await speakersService.getNames());
     } catch (err) {
       return next(err);
     }
