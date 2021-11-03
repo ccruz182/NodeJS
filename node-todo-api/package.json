@@ -17,7 +17,7 @@
     "jsonwebtoken": "^8.5.0",
     "mongodb": "^3.1.13",
     "mongoose": "^5.4.13",
-    "validator": "^10.11.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "except": "^0.1.3",
